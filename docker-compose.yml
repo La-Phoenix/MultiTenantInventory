@@ -1,0 +1,38 @@
+services:
+  postgres:
+    image: postgres:15
+    container_name: multi_tenant_pg
+    restart: always
+    environment:
+      POSTGRES_DB: MultiTenantInventory
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  multitenantinventory.api:
+    image: ${DOCKER_REGISTRY-}multitenantinventoryapi
+    build:
+      context: .
+      dockerfile: src/MultiTenantInventory.API/Dockerfile
+    container_name: multi_tenant_api
+    depends_on:
+      - postgres
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=MultiTenantInventory;Username=postgres;Password=postgres
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    volumes:
+      - .:/src
+    networks:
+      - app-net
+
+volumes:
+  postgres_data:
+
+networks:
+  app-net:
