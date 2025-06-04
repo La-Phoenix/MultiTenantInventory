@@ -1,0 +1,58 @@
+# Ignore build output
+bin/
+obj/
+
+# User-specific files
+*.user
+*.userosscache
+*.suo
+*.userprefs
+
+# Visual Studio / Rider / VS Code files
+.vscode/
+.idea/
+*.vs/
+
+# DotNet Core publish output
+publish/
+
+# Secrets and local configuration
+appsettings.*.json
+secrets.json
+*.Local.user
+
+# NuGet packages
+*.nupkg
+*.snupkg
+packages/
+
+# Rider IDE
+.idea/
+
+# Logs
+*.log
+
+# Test results
+TestResults/
+*.trx
+
+# Docker-related
+docker-compose.override.yml
+.docker/
+
+# Environment variables files
+.env
+.env.*
+
+# PostgreSQL data folders (if any local storage in project)
+pgdata/
+
+# MacOS / Linux system files
+.DS_Store
+Thumbs.db
+
+# Others
+*.cache
+*.bak
+*.swp
+
