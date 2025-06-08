@@ -1,23 +1,25 @@
 using Microsoft.EntityFrameworkCore;
+using MultiTenantInventory.API.Middleware;
+using MultiTenantInventory.Application.Common.Interfaces;
+using MultiTenantInventory.Infrastructure.Extensions;
 using MultiTenantInventory.Infrastructure.Persistence;
 using MultiTenantInventory.Infrastructure.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// Register the application database context with Entity Framework Core
+builder.Services.AddApplicationDbContext(builder.Configuration);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-
-// Register the DbContext with the connection string from configuration
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString,
-        npgsql => npgsql.MigrationsAssembly("MultiTenantInventory.Infrastructure")
-    )
-);
+// Register jwt authentication and authorization services
+builder.Services.AddJwtAuthentication(builder.Configuration);
+builder.Services.AddAuthorization();
 
 // Register the ITenantProvider service
 builder.Services.AddScoped<ITenantProvider, TenantProvider>();
+// Register the IJwtTokenService for JWT token generation
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
 // Register AutoMapper with the assembly containing the mapping profiles
-//builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -48,7 +50,13 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+// Register TenantResolutionMiddleware to resolve the tenant from the request
+app.UseMiddleware<TenantResolutionMiddleware>();
+// Register ExceptionHandlingMiddleware to handle exceptions globally
+app.UseMiddleware<ExceptionHandlingMiddleware>();
+
 app.UseHttpsRedirection();
+app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
 

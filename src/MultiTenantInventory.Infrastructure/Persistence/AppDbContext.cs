@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using MultiTenantInventory.Application.Common.Interfaces;
 using MultiTenantInventory.Domain.Entities;
 using MultiTenantInventory.Infrastructure.Persistence.EntityConfigurations;
 using MultiTenantInventory.Infrastructure.Services;
