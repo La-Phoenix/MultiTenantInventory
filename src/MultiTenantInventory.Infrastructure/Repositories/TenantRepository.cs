@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace MultiTenantInventory.Infrastructure.Repositories
 {
-    class TenantRepository
+    public class TenantRepository
     {
     }
 }

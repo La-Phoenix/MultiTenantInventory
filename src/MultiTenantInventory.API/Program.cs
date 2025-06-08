@@ -1,4 +1,6 @@
 using Microsoft.EntityFrameworkCore;
+using MultiTenantInventory.API.Middleware;
+using MultiTenantInventory.Application.Common.Interfaces;
 using MultiTenantInventory.Infrastructure.Persistence;
 using MultiTenantInventory.Infrastructure.Services;
 
@@ -17,7 +19,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 // Register the ITenantProvider service
 builder.Services.AddScoped<ITenantProvider, TenantProvider>();
 // Register AutoMapper with the assembly containing the mapping profiles
-//builder.Services.AddAutoMapper(typeof(MappingProfile));
+builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -48,6 +50,7 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseMiddleware<TenantResolutionMiddleware>();
 app.UseHttpsRedirection();
 app.UseAuthorization();
 app.MapControllers();
