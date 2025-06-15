@@ -27,7 +27,7 @@ namespace MultiTenantInventory.API.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login([FromBody] LoginRequestDto request)
         {
-            var tenant = _tenantProvider.GetTenant();
+            var tenant = _tenantProvider.GetTenant(); // User not authenticated so claims are cant extracted from User e.g UserGetTenantId()
             if (tenant == null) return Unauthorized(new ApiResponse<string>("Tenant not resolved."));
 
             var user = await _dbContext.Users.FirstOrDefaultAsync(u => u.Email == request.Email && u.TenantId == tenant.Id);
@@ -58,7 +58,7 @@ namespace MultiTenantInventory.API.Controllers
                             textInfo.ToTitleCase(request.LastName.ToLower()); // e.g . "John Doe"
             var user = new User
             {
-                Id = Guid.NewGuid(),
+                //Id = Guid.NewGuid(),//Since Id is not being used here, EF Core will automatically assign a GUID using PostgreSQL’s gen_random_uuid() when inserting
                 Email = request.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(request.Password),
                 TenantId = tenant.Id,

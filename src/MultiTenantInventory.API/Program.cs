@@ -39,8 +39,8 @@ using (var scope = app.Services.CreateScope())
 
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     //app.MapOpenApi();
     app.UseSwagger();
     app.UseSwaggerUI(c =>
@@ -48,7 +48,7 @@ if (app.Environment.IsDevelopment())
         c.SwaggerEndpoint("/swagger/v1/swagger.json", "MultiTenantInventory API V1");
         c.RoutePrefix = "swagger"; // Swagger UI at /swagger (e.g. https://localhost:5001/swagger)
     });
-}
+//}
 
 // Register TenantResolutionMiddleware to resolve the tenant from the request
 app.UseMiddleware<TenantResolutionMiddleware>();

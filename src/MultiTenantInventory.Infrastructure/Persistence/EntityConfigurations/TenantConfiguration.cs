@@ -40,6 +40,15 @@ namespace MultiTenantInventory.Infrastructure.Persistence.EntityConfigurations
             builder.HasIndex(t => t.Subdomain)
                 .IsUnique();
 
+            // CreatedAt & UpdatedAt
+            builder.Property(t => t.CreatedAt)
+                .HasDefaultValueSql("now()")
+                .HasComment("UTC timestamp when the tenant was created");
+
+            builder.Property(t => t.UpdatedAt)
+                .IsRequired(false)
+                .HasComment("UTC timestamp when the tenant was last updated");
+
             // Define one-to-many relationships with Users
             builder.HasMany(t => t.Users)
                 .WithOne(u => u.Tenant!)
@@ -51,6 +60,14 @@ namespace MultiTenantInventory.Infrastructure.Persistence.EntityConfigurations
                 .WithOne(p => p.Tenant!)
                 .HasForeignKey(p => p.TenantId)
                 .OnDelete(DeleteBehavior.Cascade);
+
+            // OwnerUser (foreign key and navigation)
+            builder.HasOne(t => t.OwnerUser)
+                .WithMany()
+                .HasForeignKey(t => t.OwnerUserId)
+                .HasConstraintName("FK_Tenants_OwnerUser")
+                .OnDelete(DeleteBehavior.Restrict);
+
         }
     }
 }

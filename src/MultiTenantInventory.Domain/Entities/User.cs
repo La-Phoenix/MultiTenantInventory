@@ -16,6 +16,7 @@ namespace MultiTenantInventory.Domain.Entities
 
         public Guid TenantId { get; set; }
         public Tenant Tenant { get; set; } = default!;
+        public bool IsAdmin { get; set; } = false; // Indicates if the user is an admin of the tenant
 
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; } = null;

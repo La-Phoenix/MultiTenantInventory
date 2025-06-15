@@ -10,13 +10,15 @@ namespace MultiTenantInventory.Infrastructure.Extensions
 {
     public static class ClaimsPrincipalExtensions
     {
-        public static Guid GetUserId(this ClaimsPrincipal user)
+        public static Guid? GetUserId(this ClaimsPrincipal user)
         {
-            return Guid.Parse(user.FindFirstValue(JwtRegisteredClaimNames.Sub)!);
+            var value = user.FindFirstValue(JwtRegisteredClaimNames.Sub);
+            return Guid.TryParse(value, out var userId) ? userId : null;
         }
-        public static Guid GetTenantId(this ClaimsPrincipal user)
+        public static Guid? GetTenantId(this ClaimsPrincipal user)
         {
-            return Guid.Parse(user.FindFirstValue("tenantId")!);
+            var value = user.FindFirstValue("tenantId");
+            return Guid.TryParse(value, out var tenantId) ? tenantId : null;
         }
     }
 }
